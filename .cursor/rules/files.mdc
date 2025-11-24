@@ -1,0 +1,80 @@
+---
+alwaysApply: true
+---
+# ===============================
+#  OCClUSA PROJECT RULES
+#  Expo + React Native + Expo Router
+#  Atomic Design Architecture
+# ===============================
+
+# ==== LAYERS ====
+# Components must only exist in:
+components/atoms
+components/molecules
+components/organisms
+
+# ==== DISALLOWED PATHS ====
+# Cursor must NOT create components here:
+components/ui
+components/common
+components/shared
+components/base
+
+# If these folders are present, treat them as legacy and prefer moving files
+# into the atomic folders instead of adding new code inside them.
+
+# ==== COMPONENT RULES ====
+- Atoms: smallest visual units (images, text wrappers, icons).
+- Molecules: small reusable blocks (dropdowns, practice picker, cards).
+- Organisms: multi-section UI (headers, lists, dashboard sections).
+
+# ==== SCREEN RULES ====
+Screens MUST ONLY live inside:
+app/
+app/(tabs)/
+app/<routes>
+
+Do NOT place screens inside components/.
+
+# ==== LOGIC RULES ====
+Hooks live in /hooks/
+They must NOT import components.
+They may import utils and constants.
+
+# ==== ASSETS ====
+All images MUST live in:
+assets/images/
+
+Do not store images inside components.
+
+# ==== LOGO RULE ====
+The Occlusa logo MUST be used from:
+assets/images/occlusa-logo.png
+And wrapped by:
+components/atoms/OcclusaLogo/
+
+Do NOT recreate SVG or TSX versions of the logo unless explicitly instructed.
+
+# ==== IMPORT ORDER ====
+1. react / react-native
+2. expo packages
+3. third-party libs
+4. hooks
+5. constants
+6. components (atoms → molecules → organisms)
+
+# ==== NAMING RULES ====
+- Components use PascalCase.
+- Screens end in "Screen" only if needed.
+- Atoms and molecules get folder names that match component names.
+- Avoid kebab-case, snake_case, and deep nesting.
+
+# ==== AUTOGEN RESTRICTION ====
+Cursor should ONLY generate UI components inside:
+components/atoms
+components/molecules
+components/organisms
+
+Cursor should NEVER generate files directly in app/ except screens.
+Cursor should NEVER auto-create new folders outside the defined structure.
+

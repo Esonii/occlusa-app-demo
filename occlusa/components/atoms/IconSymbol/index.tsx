@@ -10,6 +10,11 @@ const MAPPING: IconMapping = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'chevron.down': 'keyboard-arrow-down',
+  'chevron.up': 'keyboard-arrow-up',
+  'calendar.fill': 'event',
+  'cross.case.fill': 'local-hospital',
+  'person.fill': 'person',
 };
 
 type IconSymbolName = keyof typeof MAPPING;

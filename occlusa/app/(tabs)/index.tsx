@@ -1,81 +1,123 @@
-import { Image } from 'expo-image';
-import { Platform, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { HelloWave } from '@/components/atoms/HelloWave';
-import { ThemedText } from '@/components/atoms/ThemedText';
-import { ThemedView } from '@/components/atoms/ThemedView';
-import { ParallaxScrollView } from '@/components/molecules/ParallaxScrollView';
-import { Link } from 'expo-router';
+const STORAGE_KEY = '@occlusa_user_account';
+
+type UserData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobilePhone: string;
+  password: string;
+  dateOfBirth: string;
+};
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          className="h-[178px] w-[290px] bottom-0 left-0 absolute"
-        />
-      }>
-      <ThemedView className="flex-row items-center">
-        <ThemedText type="title">Welcome!</ThemedText>
-        <View className="ml-2">
-          <HelloWave />
-        </View>
-      </ThemedView>
-      <ThemedView className="mb-4">
-        <ThemedText type="subtitle" className="mb-2">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="mb-4">
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle" className="mb-2">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const router = useRouter();
+  const [firstName, setFirstName] = useState<string>('User');
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="mb-4">
-        <ThemedText type="subtitle" className="mb-2">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userDataString = await AsyncStorage.getItem(STORAGE_KEY);
+        if (userDataString) {
+          const userData: UserData = JSON.parse(userDataString);
+          if (userData.firstName) {
+            setFirstName(userData.firstName);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          <Text style={styles.greeting}>Hello, {firstName}</Text>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Appointments</Text>
+            <Text style={styles.sectionText}>You don't have any upcoming appointments</Text>
+            <Pressable
+              style={styles.button}
+              onPress={() => router.push('/(tabs)/appointments')}>
+              <Text style={styles.buttonText}>Book an Appointment</Text>
+            </Pressable>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Services</Text>
+            <Text style={styles.sectionText}>Want to learn more about our services?</Text>
+            <Pressable style={styles.button}>
+              <Text style={styles.buttonText}>See our Services</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40,
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#005999',
+    marginBottom: 32,
+    textAlign: 'center',
+  },
+  section: {
+    marginBottom: 40,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 12,
+  },
+  sectionText: {
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#005999',
+    borderRadius: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    alignSelf: 'center',
+    minWidth: 200,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

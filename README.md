@@ -14,15 +14,12 @@
 - @react-navigation/stack
 
 **UI & Styling**
-- nativewind
-- tailwindcss
 - react-native-reanimated
 - react-native-gesture-handler
 - @expo/vector-icons
 
 **TypeScript / Tooling**
 - typescript
-- nativewind-env.d.ts
 - @types/react
 - @types/react-native
 

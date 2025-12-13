@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { IconSymbol } from '@/components/atoms/IconSymbol';
 import { ThemedText } from '@/components/atoms/ThemedText';
@@ -16,10 +16,10 @@ export function Collapsible({ children, title }: CollapsibleProps) {
   return (
     <ThemedView>
       <TouchableOpacity
-        className="flex-row items-center"
+        style={styles.touchable}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}>
-        <View className="mr-1.5">
+        <View style={styles.iconContainer}>
           <IconSymbol
             name="chevron.right"
             size={18}
@@ -29,8 +29,22 @@ export function Collapsible({ children, title }: CollapsibleProps) {
         </View>
         <ThemedText type="defaultSemiBold">{title}</ThemedText>
       </TouchableOpacity>
-      {isOpen && <ThemedView className="mt-1.5 ml-6">{children}</ThemedView>}
+      {isOpen && <ThemedView style={styles.childrenContainer}>{children}</ThemedView>}
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    marginRight: 6,
+  },
+  childrenContainer: {
+    marginTop: 6,
+    marginLeft: 24,
+  },
+});
 

@@ -1,80 +1,155 @@
----
 alwaysApply: true
----
-# ===============================
-#  OCClUSA PROJECT RULES
-#  Expo + React Native + Expo Router
-#  Atomic Design Architecture
-# ===============================
+===============================
+OCCLUSA APP PROJECT RULES
+Expo + React Native + Expo Router
+Condensed Atomic(ish) Design (Mobile)
+===============================
+==== PROJECT SHAPE (EXPO) ====
 
-# ==== LAYERS ====
-# Components must only exist in:
+This is an Expo app with Expo Router.
+
+Route-level UI (screens) MUST live inside:
+app/
+app/(tabs)/
+app/<route-groups>/
+
+Do NOT place screens inside components/.
+
+==== LAYERS (UI COMPONENTS) ====
+Components must only exist in:
+
 components/atoms
 components/molecules
 components/organisms
 
-# ==== DISALLOWED PATHS ====
-# Cursor must NOT create components here:
+==== DISALLOWED PATHS ====
+Cursor must NOT create components here:
+
 components/ui
 components/common
 components/shared
 components/base
 
-# If these folders are present, treat them as legacy and prefer moving files
-# into the atomic folders instead of adding new code inside them.
+If these folders are present, treat them as legacy and prefer moving files
+into the atomic folders instead of adding new code inside them.
+==== COMPONENT DEFINITIONS ====
 
-# ==== COMPONENT RULES ====
-- Atoms: smallest visual units (images, text wrappers, icons).
-- Molecules: small reusable blocks (dropdowns, practice picker, cards).
-- Organisms: multi-section UI (headers, lists, dashboard sections).
+Atoms: smallest visual units (Text wrappers, icons, small buttons, small image wrappers).
 
-# ==== SCREEN RULES ====
-Screens MUST ONLY live inside:
-app/
-app/(tabs)/
-app/<routes>
+Molecules: small reusable blocks (cards, list items, pickers, form rows).
 
-Do NOT place screens inside components/.
+Organisms: multi-section UI (headers, tab bars, page sections, complex lists).
 
-# ==== LOGIC RULES ====
-Hooks live in /hooks/
-They must NOT import components.
-They may import utils and constants.
+==== SCREEN / ROUTE RULES (EXPO ROUTER) ====
 
-# ==== ASSETS ====
+Screens and route files MUST ONLY live in app/.
+
+Allowed examples:
+app/index.tsx
+app/(tabs)/home.tsx
+app/(auth)/sign-in.tsx
+
+Do NOT create screen files in components/.
+
+==== LOGIC RULES ====
+
+Hooks live in:
+hooks/
+
+They must NOT import UI components.
+They MAY import utilities and constants from:
+constants/
+utils/
+
+==== ASSETS ====
+
 All images MUST live in:
 assets/images/
 
 Do not store images inside components.
 
-# ==== LOGO RULE ====
+==== LOGO RULE (CRITICAL) ====
+
 The Occlusa logo MUST be used from:
 assets/images/occlusa-logo.png
+
 And wrapped by:
 components/atoms/OcclusaLogo/
 
 Do NOT recreate SVG or TSX versions of the logo unless explicitly instructed.
 
-# ==== IMPORT ORDER ====
-1. react / react-native
-2. expo packages
-3. third-party libs
-4. hooks
-5. constants
-6. components (atoms → molecules → organisms)
+==== STYLING RULES (REACT NATIVE) ====
 
-# ==== NAMING RULES ====
-- Components use PascalCase.
-- Screens end in "Screen" only if needed.
-- Atoms and molecules get folder names that match component names.
-- Avoid kebab-case, snake_case, and deep nesting.
+Do NOT create .css files (React Native does not use CSS).
 
-# ==== AUTOGEN RESTRICTION ====
-Cursor should ONLY generate UI components inside:
+Use StyleSheet, NativeWind, or inline styles consistent with the existing codebase.
+
+Keep styles colocated with the component when reasonable.
+
+Do not create random global style files unless the project already uses them.
+
+==== IMPORT ORDER (MOBILE) ====
+
+react / react-native
+
+expo packages (expo-router, expo-*, etc.)
+
+other third-party libs
+
+hooks
+
+utils / constants
+
+components (atoms → molecules → organisms)
+
+local helpers (defined in the same file)
+
+==== NAMING RULES ====
+
+Components use PascalCase.
+
+Screen naming: do NOT force a "Screen" suffix unless it improves clarity.
+(Route filenames should follow Expo Router conventions.)
+
+Atoms/molecules/organisms get folder names that match component names when needed.
+
+Avoid kebab-case, snake_case, and deep nesting.
+
+==== CODE CONDENSING RULES (IMPORTANT) ====
+
+DO NOT create "one tiny file per tiny view" components.
+
+It is OK and PREFERRED to keep small, related helper components in the SAME file
+as the parent if they are:
+
+Only used in that parent, AND
+
+Very small / simple.
+
+Only extract a new file when:
+
+A component is reused in multiple places, OR
+
+It is complex enough to deserve its own file.
+
+Avoid creating new folders just to hold a single trivial component.
+
+Keep the component tree readable but not over-fragmented.
+
+==== AUTOGEN RESTRICTION ====
+
+Cursor should ONLY generate UI component files inside:
 components/atoms
 components/molecules
 components/organisms
 
-Cursor should NEVER generate files directly in app/ except screens.
-Cursor should NEVER auto-create new folders outside the defined structure.
+Cursor should ONLY generate route/screen files inside:
+app/
 
+Cursor should NEVER:
+
+Generate random files at project root (beyond standard Expo config files that already exist).
+
+Auto-create new top-level folders outside the defined structure.
+
+Generate component files inside app/ (app/ is for routes/screens only).
